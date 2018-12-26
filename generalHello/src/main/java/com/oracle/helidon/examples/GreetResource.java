@@ -17,9 +17,13 @@
 package com.oracle.helidon.examples;
 
 import javax.enterprise.context.RequestScoped;
+//import java.net.URL;
+//import java.net.HttpURLConnection;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
+//import javax.json.JsonValue;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -106,6 +110,88 @@ public class GreetResource {
                 .add("greeting", newGreeting)
                 .build();
     }
+
+   /**
+     * Return the weather to the individual specified by "name"
+     * and for the specified "zipcode".
+     * 
+     * @param name of the requester
+     * @param zipcode the weather for the specified location, by zipcode
+     * 
+     * @return {@link JsonObject}
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Path("/{name}/weather/{zipcode}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject getWeatherByZipcode(
+        @PathParam("name") String name, 
+        @PathParam("zipcode") String zipcode) {
+        
+        WeatherProvider weather = new WeatherProvider(name,zipcode);
+        JsonObject response = weather.getWeatherByZip();
+
+        // Once we have the response then we need 
+        // to format the response appropriately
+
+        JsonObjectBuilder target = Json.createObjectBuilder();
+        response.forEach(target::add); // copy source into target
+        target.add("Requestor", name); // add or update values
+        JsonObject destination = target.build(); // build destination
+
+
+        return destination;
+        
+        
+        // build URL for weather invocation
+        // make call to weather service
+        // Get response from the weather service
+        // Retrieve the current temperature for the zip code
+        // Format the message
+        // return the response object
+
+        // JsonObject response = url.getResponse();
+        // String temperature = response.getTemperature();
+
+        /*return Json.createObjectBuilder()
+                .add("greeting", newGreeting)
+                .build();*/
+    }
+
+    /**
+     * Return the weather to the individual specified by "name"
+     * and for the specified "zipcode".
+     * 
+     * @param name of the requester
+     * @param zipcode the weather for the specified location, by zipcode
+     * 
+     * @return {@link JsonObject}
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    @Path("/fn/{name}/")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject helloFromFn(
+        @PathParam("name") String newGreeting) {
+    
+        
+        greetingProvider.setMessage(newGreeting);
+        // build URL for weather invocation
+        // make call to weather service
+        // Get response from the weather service
+        // Retrieve the current temperature for the zip code
+        // Format the message
+        // return the response object
+
+        // JsonObject response = url.getResponse();
+        // String temperature = response.getTemperature();
+
+        return Json.createObjectBuilder()
+                .add("greeting", newGreeting)
+                .build();
+    }
+
+
 
     private JsonObject createResponse(String who) {
         String msg = String.format("%s %s!", greetingProvider.getMessage(), who);

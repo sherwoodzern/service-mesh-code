@@ -1,0 +1,4 @@
+com/oracle/helidon/examples/WeatherApplication.class
+com/oracle/helidon/examples/WeatherService.class
+com/oracle/helidon/examples/WeatherResource.class
+com/oracle/helidon/examples/Main.class
