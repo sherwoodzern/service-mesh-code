@@ -96,13 +96,9 @@ import java.io.IOException;
     // kelvin, metrics, imperial
     private String buildPath() {
         StringBuilder bldr = new StringBuilder();
-        bldr.append("/");
-        bldr.append("zip");
-        bldr.append("/");
+        bldr.append("/zip/");
         bldr.append(zipcode);
-        bldr.append("/");
-        bldr.append("units");
-        bldr.append("/");
+        bldr.append("/units/");
         bldr.append(units);
         return bldr.toString();
     }

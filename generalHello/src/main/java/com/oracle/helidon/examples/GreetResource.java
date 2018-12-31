@@ -32,6 +32,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 /**
  * A simple JAX-RS resource to greet you. Examples:
  *
@@ -54,6 +57,7 @@ public class GreetResource {
      * The greeting message provider.
      */
     private final GreetingProvider greetingProvider;
+    private Logger logger = Logger.getLogger("com.oracle.helidon.examples");
 
     /**
      * Using constructor injection to get a configuration property.
@@ -75,7 +79,10 @@ public class GreetResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getDefaultMessage() {
-        return createResponse("World");
+        logger.log(Level.INFO,"Invoking the getDefaultMessage");
+        JsonObject js = createResponse("World");
+        logger.log(Level.INFO, "Dumping the JsonObject", js);
+        return js;
     }
 
     /**
@@ -121,14 +128,15 @@ public class GreetResource {
      * @return {@link JsonObject}
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Path("/{name}/weather/{zipcode}")
+    @Path("/{name}/weather/{zipcode}/units/{units}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getWeatherByZipcode(
         @PathParam("name") String name, 
-        @PathParam("zipcode") String zipcode) {
+        @PathParam("zipcode") String zipcode, 
+        @PathParam("units") String units) {
         
-        WeatherProvider weather = new WeatherProvider(name,zipcode);
+        WeatherProvider weather = new WeatherProvider(units,zipcode);
         JsonObject response = weather.getWeatherByZip();
 
         // Once we have the response then we need 

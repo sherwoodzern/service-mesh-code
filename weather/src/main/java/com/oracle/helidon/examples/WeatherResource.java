@@ -49,7 +49,7 @@ public class WeatherResource {
     /**
      * The greeting message provider.
      */
-    private final WeatherService weatherProvider;
+    private final WeatherService weatherService;
 
     /**
      * Using constructor injection to get a configuration property.
@@ -58,8 +58,8 @@ public class WeatherResource {
      * @param greetingConfig the configured greeting message
      */
     @Inject
-    public WeatherResource(WeatherService weatherProvider) {
-        this.weatherProvider = weatherProvider;
+    public WeatherResource(WeatherService weatherService) {
+        this.weatherService = weatherService;
     }
 
     /**
@@ -73,14 +73,13 @@ public class WeatherResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getWeatherByZipCode(
-        @PathParam("zipcode") String zipcode,
-        @PathParam("units") String units) {
-        //weatherProvider.setMessage(newGreeting);
+            @PathParam("zipcode") String zipcode,
+            @PathParam("units") String units) {
+        weatherService.setUnits(units);
+        weatherService.setZipcode(zipcode);
+        JsonObject js = weatherService.getWeatherByZip();
+        return js;
 
-        return Json.createObjectBuilder()
-                .add("zipcode", zipcode)
-                .add("units", units)
-                .build();
     }
 
     /**
@@ -94,8 +93,8 @@ public class WeatherResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getWeatherByCity(
-        @PathParam("name") String name,
-        @PathParam("city") String city) {
+        @PathParam("city") String city,
+        @PathParam("units") String units) {
         //greetingProvider.setMessage(newGreeting);
 
         return Json.createObjectBuilder()
@@ -104,11 +103,11 @@ public class WeatherResource {
     }
 
 
-    private JsonObject createResponse(String who) {
+    /* private JsonObject createResponse(String who) {
         String msg = String.format("%s %s!", weatherProvider.getMessage(), who);
 
         return Json.createObjectBuilder()
                 .add("message", msg)
                 .build();
-    }
+    }*/
 }
