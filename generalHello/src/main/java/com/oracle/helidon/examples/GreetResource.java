@@ -49,7 +49,7 @@ import java.util.logging.Level;
  *
  * The message is returned as a JSON object.
  */
-@Path("/greet")
+@Path("/")
 @RequestScoped
 public class GreetResource {
 
@@ -76,6 +76,7 @@ public class GreetResource {
      * @return {@link JsonObject}
      */
     @SuppressWarnings("checkstyle:designforextension")
+    @Path("/greet")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getDefaultMessage() {
@@ -85,38 +86,7 @@ public class GreetResource {
         return js;
     }
 
-    /**
-     * Return a greeting message using the name that was provided.
-     *
-     * @param name the name to greet
-     * @return {@link JsonObject}
-     */
-    @SuppressWarnings("checkstyle:designforextension")
-    @Path("/{name}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject getMessage(@PathParam("name") String name) {
-        return createResponse(name);
-    }
 
-    /**
-     * Set the greeting to use in future messages.
-     *
-     * @param newGreeting the new greeting message
-     * @return {@link JsonObject}
-     */
-    @SuppressWarnings("checkstyle:designforextension")
-    @Path("/greeting/{greeting}")
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject updateGreeting(@PathParam("greeting") String newGreeting) {
-        greetingProvider.setMessage(newGreeting);
-
-        return Json.createObjectBuilder()
-                .add("greeting", newGreeting)
-                .build();
-    }
 
    /**
      * Return the weather to the individual specified by "name"
@@ -128,14 +98,14 @@ public class GreetResource {
      * @return {@link JsonObject}
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Path("/{name}/weather/{zipcode}/units/{units}")
+    @Path("/Sherwood/weather/{zipcode}/units/{units}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getWeatherByZipcode(
-        @PathParam("name") String name, 
         @PathParam("zipcode") String zipcode, 
         @PathParam("units") String units) {
         
+        logger.log(Level.INFO, "Invoking getWeatherByZipcode");
         WeatherProvider weather = new WeatherProvider(units,zipcode);
         JsonObject response = weather.getWeatherByZip();
 
@@ -144,7 +114,7 @@ public class GreetResource {
 
         JsonObjectBuilder target = Json.createObjectBuilder();
         response.forEach(target::add); // copy source into target
-        target.add("Requestor", name); // add or update values
+        //target.add("Requestor", name); // add or update values
         JsonObject destination = target.build(); // build destination
 
 
@@ -176,7 +146,7 @@ public class GreetResource {
      * @return {@link JsonObject}
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Path("/fn/{name}/")
+    @Path("/{name}/fn/")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject helloFromFn(

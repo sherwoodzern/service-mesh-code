@@ -10,10 +10,10 @@ spec:
   http:
   - match:
     - uri:
-        prefix: "/greet"
+        prefix: "/"
     route:
     - destination:
-        host: greetandweather-service
+        host: greetandweather-service.greet-ns.svc.cluster.local
         subset: v1 
         port:
           number: 3000 
