@@ -5,6 +5,6 @@ metadata:
   namespace: default
 spec:
   targets:
-  - name: weather-proxy-service
+  - name: weather-proxy-service 
   peers:
   - mtls: {}

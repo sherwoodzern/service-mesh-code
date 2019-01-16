@@ -2,6 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
     name: weather-proxy-service
+    namespace: default
     labels:
         app: weather-proxy
         version: v1
@@ -30,7 +31,7 @@ spec:
                 version: v1
         spec:
             containers:
-                - image: skzern/weatherproxy:1.0.0
+                - image: skzern/weatherproxy:2.0.7
                   imagePullPolicy: Always
                   name: weatherproxy
                   ports:

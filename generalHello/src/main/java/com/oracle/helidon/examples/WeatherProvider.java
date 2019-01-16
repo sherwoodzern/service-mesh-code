@@ -14,6 +14,13 @@ import java.net.MalformedURLException;
 import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import javax.ws.rs.core.HttpHeaders;
+import com.oracle.helidon.EnvoyHeader;
+import com.oracle.helidon.EnvoyTrace;
+import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
+import java.util.Collection;
+
 
 /* 
  * This is a helper class that knows how to build the invocation
@@ -24,17 +31,20 @@ import java.util.logging.Level;
 
     private String units;
     private String zipcode;
+    private HttpHeaders httpHeaders;
+
     private static final Logger logger = Logger.getLogger("com.oracle.helidon.examples");
 
     public WeatherProvider () {
         // Defaults to Washington, D.C.
-        this("20001", "imperial");
 
     }
 
-    public WeatherProvider(String units, String zipcode) {
+    public WeatherProvider(String units, String zipcode, HttpHeaders httpHeaders) {
         this.units = units;
         this.zipcode = zipcode;
+        this.httpHeaders = httpHeaders;
+        
     }
 
     public JsonObject getWeatherByZip() {
@@ -45,6 +55,9 @@ import java.util.logging.Level;
         JsonObject jsonObject = null;
         try {
             connection = getHttpConnection("GET");
+            EnvoyHeader header = getAllHeaders();
+            EnvoyTrace tracer = new EnvoyTrace(header);
+            tracer.addTraceHeaderToRequest(connection);
             logger.log(Level.INFO, connection.getURL().toString());
             jsonReader = Json.createReader(connection.getInputStream());
             jsonObject = jsonReader.readObject();
@@ -115,6 +128,16 @@ import java.util.logging.Level;
             .add("Status:", "Failed")
             .build();
             return jsonObject;
+    }
+
+    private EnvoyHeader getAllHeaders() {
+        MultivaluedMap <String, String> headerValues = httpHeaders.getRequestHeaders();
+        Collection<List<String>> values = headerValues.values();
+        Object[] elements = values.toArray();
+        for (int i = 0; i < elements.length; i++ ){
+            logger.log(Level.INFO, (String) elements[i]);
+        }
+        return new EnvoyHeader();
     }
 
 

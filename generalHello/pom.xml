@@ -218,5 +218,10 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.oracle.helidon</groupId>
+            <artifactId>EnvoyTrace</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>

@@ -30,7 +30,7 @@ spec:
                 version: v1
         spec:
             containers:
-                - image: skzern/greeter-weather:1.0.1
+                - image: skzern/greeter-weather:2.0.7
                   imagePullPolicy: Always
                   name: greetandweather
                   ports:

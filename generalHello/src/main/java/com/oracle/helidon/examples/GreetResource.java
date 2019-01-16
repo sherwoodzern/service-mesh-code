@@ -17,23 +17,30 @@
 package com.oracle.helidon.examples;
 
 import javax.enterprise.context.RequestScoped;
-//import java.net.URL;
-//import java.net.HttpURLConnection;
+
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
-//import javax.json.JsonValue;
+
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.List;
+import java.util.Collection;
+import java.util.function.BiConsumer;
+import com.oracle.helidon.EnvoyHeader;
 
 /**
  * A simple JAX-RS resource to greet you. Examples:
@@ -58,6 +65,7 @@ public class GreetResource {
      */
     private final GreetingProvider greetingProvider;
     private Logger logger = Logger.getLogger("com.oracle.helidon.examples");
+    private HttpHeaders myHeader;
 
     /**
      * Using constructor injection to get a configuration property.
@@ -79,7 +87,10 @@ public class GreetResource {
     @Path("/greet")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject getDefaultMessage() {
+    public JsonObject getDefaultMessage(
+        @Context HttpHeaders httpHeaders) {
+        myHeader = httpHeaders;
+        getAllHeaders();
         logger.log(Level.INFO,"Invoking the getDefaultMessage");
         JsonObject js = createResponse("World");
         logger.log(Level.INFO, "Dumping the JsonObject", js);
@@ -98,15 +109,17 @@ public class GreetResource {
      * @return {@link JsonObject}
      */
     @SuppressWarnings("checkstyle:designforextension")
-    @Path("/Sherwood/weather/{zipcode}/units/{units}")
+    @Path("/weather/{zipcode}/units/{units}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getWeatherByZipcode(
         @PathParam("zipcode") String zipcode, 
-        @PathParam("units") String units) {
+        @PathParam("units") String units,
+        @Context HttpHeaders httpHeaders) {
         
         logger.log(Level.INFO, "Invoking getWeatherByZipcode");
-        WeatherProvider weather = new WeatherProvider(units,zipcode);
+
+        WeatherProvider weather = new WeatherProvider(units,zipcode, httpHeaders);
         JsonObject response = weather.getWeatherByZip();
 
         // Once we have the response then we need 
@@ -178,4 +191,15 @@ public class GreetResource {
                 .add("message", msg)
                 .build();
     }
+
+    private void getAllHeaders() {
+        MultivaluedMap <String, String> headerValues = myHeader.getRequestHeaders();
+        Collection<List<String>> values = headerValues.values();
+        Object[] elements = values.toArray();
+        for (int i = 0; i < elements.length; i++ ){
+            logger.log(Level.INFO, elements[i].toString());
+        }
+    }
+
+
 }
