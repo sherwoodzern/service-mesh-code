@@ -20,6 +20,8 @@ import com.oracle.helidon.EnvoyTrace;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /* 
@@ -132,6 +134,15 @@ import java.util.Collection;
 
     private EnvoyHeader getAllHeaders() {
         MultivaluedMap <String, String> headerValues = httpHeaders.getRequestHeaders();
+        EnvoyHeader envoyHeader = new EnvoyHeader();
+        Set<String> keys = headerValues.keySet();
+        Iterator<String> iter = keys.iterator();
+        while (iter.hasNext()) {
+            String key = iter.next();
+            envoyHeader.addHeader(key, headerValues.get(key));
+        }
+        
+        
         Collection<List<String>> values = headerValues.values();
         Object[] elements = values.toArray();
         for (int i = 0; i < elements.length; i++ ){
