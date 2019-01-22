@@ -143,11 +143,11 @@ import java.util.Set;
         }
         
         
-        Collection<List<String>> values = headerValues.values();
+        /*Collection<List<String>> values = headerValues.values();
         Object[] elements = values.toArray();
         for (int i = 0; i < elements.length; i++ ){
-            logger.log(Level.INFO, (String) elements[i]);
-        }
+            logger.log(Level.INFO, ((List<String>) elements[i]).toString());
+        }*/
         return new EnvoyHeader();
     }
 

@@ -31,7 +31,7 @@ spec:
                 version: v1
         spec:
             containers:
-                - image: skzern/weatherproxy:2.0.7
+                - image: skzern/weatherproxy:2.0.10
                   imagePullPolicy: Always
                   name: weatherproxy
                   ports:

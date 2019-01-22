@@ -25,6 +25,7 @@ import java.net.URL;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 //import java.util.logging.Level;
 
 
@@ -90,8 +91,11 @@ public class WeatherService {
         HttpURLConnection connection = null;
         try {
             connection = getURLConnection("GET", query);
+            logger.log(Level.INFO, "Json createReader");
             jsonReader = Json.createReader(connection.getInputStream());
+            logger.log(Level.INFO, "Json readObject");
             jsonObject = jsonReader.readObject();
+            logger.log(Level.INFO, jsonObject.toString());
         } catch (Exception e) {
             jsonObject = createExceptionResponse(e);
         }
